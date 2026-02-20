@@ -613,13 +613,14 @@ function getData() {
 
 async function persistData() {
   try {
-    const payload = encodeURIComponent(JSON.stringify(_dataCache));
-    const res = await fetch(APPS_SCRIPT_URL + "?action=save&data=" + payload);
-    const json = await res.json();
-    if (!json.ok) {
-      console.error("Save error from server:", json.error);
-      toast("Save failed: " + (json.error || "unknown error"), true);
-    }
+    const payload = JSON.stringify(_dataCache);
+    await fetch(APPS_SCRIPT_URL, {
+      method: "POST",
+      mode: "no-cors",
+      headers: { "Content-Type": "text/plain" },
+      body: payload
+    });
+    // can't read response in no-cors, so verify by checking sheet manually
   } catch(e) {
     console.error("Save failed:", e);
     toast("Save failed — check connection", true);
