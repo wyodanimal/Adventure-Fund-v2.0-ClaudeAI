@@ -33,7 +33,6 @@ body {
   min-height: 100vh;
 }
 
-/* NAV */
 nav {
   background: var(--surface);
   border-bottom: 1px solid var(--border);
@@ -97,13 +96,11 @@ nav {
   cursor: pointer;
 }
 
-/* MAIN */
 main { padding: 24px 20px; max-width: 1200px; margin: 0 auto; }
 
 .page { display: none; }
 .page.active { display: block; }
 
-/* CARDS */
 .card {
   background: var(--surface);
   border: 1px solid var(--border);
@@ -119,7 +116,6 @@ main { padding: 24px 20px; max-width: 1200px; margin: 0 auto; }
   margin-bottom: 16px;
 }
 
-/* GRID LAYOUTS */
 .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
 .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
 .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
@@ -132,7 +128,6 @@ main { padding: 24px 20px; max-width: 1200px; margin: 0 auto; }
   .year-selector { width: 100%; justify-content: flex-end; padding: 8px 0; }
 }
 
-/* STAT CARDS */
 .stat-card {
   background: var(--surface2);
   border: 1px solid var(--border);
@@ -162,7 +157,6 @@ main { padding: 24px 20px; max-width: 1200px; margin: 0 auto; }
   margin-top: 4px;
 }
 
-/* PROGRESS BAR */
 .progress-wrap { margin: 8px 0; }
 .progress-label {
   display: flex;
@@ -187,7 +181,6 @@ main { padding: 24px 20px; max-width: 1200px; margin: 0 auto; }
 .progress-fill.red { background: var(--red); }
 .progress-fill.yellow { background: var(--yellow); }
 
-/* TABLES */
 .table-wrap { overflow-x: auto; }
 table { width: 100%; border-collapse: collapse; }
 th {
@@ -208,7 +201,6 @@ tr:last-child td { border-bottom: none; }
 tr:hover td { background: var(--surface2); }
 .mono { font-family: var(--mono-font); }
 
-/* FORMS */
 .form-row {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
@@ -232,7 +224,6 @@ input:focus, select:focus, textarea:focus {
   border-color: var(--accent);
 }
 
-/* BUTTONS */
 .btn {
   display: inline-flex;
   align-items: center;
@@ -259,7 +250,6 @@ input:focus, select:focus, textarea:focus {
 
 .btn-row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-top: 12px; }
 
-/* BADGES */
 .badge {
   display: inline-block;
   padding: 2px 8px;
@@ -277,7 +267,6 @@ input:focus, select:focus, textarea:focus {
 .badge-maybe { background: rgba(232,196,58,0.2); color: var(--yellow); }
 .badge-side_job { background: rgba(232,196,58,0.2); color: var(--yellow); }
 
-/* SECTION HEADER */
 .section-header {
   display: flex;
   justify-content: space-between;
@@ -287,7 +276,6 @@ input:focus, select:focus, textarea:focus {
   gap: 8px;
 }
 
-/* ACCOUNT INPUTS */
 .account-row {
   display: flex;
   align-items: center;
@@ -299,7 +287,6 @@ input:focus, select:focus, textarea:focus {
 .account-name { flex: 1; font-weight: 500; }
 .account-input { width: 120px; }
 
-/* MODAL */
 .modal-overlay {
   position: fixed;
   inset: 0;
@@ -327,18 +314,7 @@ input:focus, select:focus, textarea:focus {
   color: var(--accent);
   margin-bottom: 20px;
 }
-.modal-close {
-  position: absolute;
-  top: 16px;
-  right: 16px;
-  background: none;
-  border: none;
-  color: var(--muted);
-  font-size: 20px;
-  cursor: pointer;
-}
 
-/* TOAST */
 .toast {
   position: fixed;
   bottom: 24px;
@@ -358,22 +334,18 @@ input:focus, select:focus, textarea:focus {
 .toast.show { opacity: 1; transform: translateY(0); }
 .toast.error { border-color: var(--red); color: var(--red); }
 
-/* HORIZON TABLE */
 .horizon-row { display: flex; gap: 8px; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--border); }
 .horizon-row:last-child { border-bottom: none; }
 .horizon-month { font-family: var(--mono-font); font-size: 12px; color: var(--muted); width: 80px; }
 .horizon-bar-wrap { flex: 1; }
 .horizon-amount { font-family: var(--mono-font); font-size: 13px; width: 90px; text-align: right; }
 
-/* EMPTY STATE */
 .empty { text-align: center; padding: 40px; color: var(--muted); }
 .empty-icon { font-size: 40px; margin-bottom: 12px; }
 
-/* GAP INDICATOR */
 .gap-positive { color: var(--green); }
 .gap-negative { color: var(--red); }
 
-/* TRANSFER SECTION */
 .transfer-grid {
   display: grid;
   grid-template-columns: 1fr auto 1fr;
@@ -381,9 +353,39 @@ input:focus, select:focus, textarea:focus {
   align-items: end;
 }
 .transfer-arrow { color: var(--accent); font-size: 20px; padding-bottom: 8px; text-align: center; }
+
+/* Loading overlay */
+#loading-overlay {
+  position: fixed;
+  inset: 0;
+  background: var(--bg);
+  z-index: 999;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+}
+#loading-overlay.hidden { display: none; }
+.loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid var(--border);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
 </style>
 </head>
 <body>
+
+<!-- Loading overlay shown on startup -->
+<div id="loading-overlay">
+  <div class="loading-spinner"></div>
+  <div style="font-family:var(--heading-font);font-size:24px;letter-spacing:2px;color:var(--accent);">LOADING ADVENTURE FUND</div>
+  <div style="color:var(--muted);font-size:13px;">Connecting to Google Sheets…</div>
+</div>
 
 <nav>
   <div class="nav-brand">⛰ ADVENTURE FUND <span style="font-size:14px;color:var(--muted);letter-spacing:1px;">V2.0</span></div>
@@ -408,9 +410,7 @@ input:focus, select:focus, textarea:focus {
     <h1 style="font-family:var(--heading-font);font-size:32px;letter-spacing:2px;">OVERVIEW</h1>
     <span id="dash-year-label" style="font-family:var(--mono-font);color:var(--muted);font-size:14px;"></span>
   </div>
-
   <div class="grid-4" style="margin-bottom:16px;" id="dash-stats"></div>
-
   <div class="grid-2" style="margin-bottom:16px;">
     <div class="card">
       <div class="card-title">FUND HEALTH</div>
@@ -422,7 +422,6 @@ input:focus, select:focus, textarea:focus {
       <div id="dash-upcoming-income"></div>
     </div>
   </div>
-
   <div class="grid-2">
     <div class="card">
       <div class="card-title">CATEGORY SPEND</div>
@@ -440,7 +439,6 @@ input:focus, select:focus, textarea:focus {
   <div class="section-header">
     <h1 style="font-family:var(--heading-font);font-size:32px;letter-spacing:2px;">ACCOUNTS</h1>
   </div>
-
   <div class="grid-2" style="margin-bottom:16px;">
     <div class="card">
       <div class="card-title">UPDATE BALANCES</div>
@@ -470,7 +468,6 @@ input:focus, select:focus, textarea:focus {
       </div>
     </div>
   </div>
-
   <div class="card">
     <div class="card-title">ACCOUNT SUMMARY</div>
     <div class="table-wrap">
@@ -495,9 +492,7 @@ input:focus, select:focus, textarea:focus {
       <button class="btn btn-primary" onclick="openIncomeModal()">+ Add Income</button>
     </div>
   </div>
-
   <div class="grid-3" style="margin-bottom:16px;" id="income-stats"></div>
-
   <div id="income-table-wrap"></div>
 </div>
 
@@ -510,7 +505,6 @@ input:focus, select:focus, textarea:focus {
       <button class="btn btn-primary" onclick="openItemModal()">+ Item</button>
     </div>
   </div>
-
   <div id="categories-list"></div>
 </div>
 
@@ -520,9 +514,7 @@ input:focus, select:focus, textarea:focus {
     <h1 style="font-family:var(--heading-font);font-size:32px;letter-spacing:2px;">TRIPS</h1>
     <button class="btn btn-primary" onclick="openTripModal()">+ Add Trip</button>
   </div>
-
   <div class="grid-3" style="margin-bottom:16px;" id="trip-stats"></div>
-
   <div class="card">
     <div class="table-wrap">
       <table>
@@ -541,7 +533,6 @@ input:focus, select:focus, textarea:focus {
   <div class="section-header">
     <h1 style="font-family:var(--heading-font);font-size:32px;letter-spacing:2px;">SETTINGS</h1>
   </div>
-
   <div class="grid-2" style="margin-bottom:16px;">
     <div class="card">
       <div class="card-title">YEAR GOALS</div>
@@ -568,10 +559,9 @@ input:focus, select:focus, textarea:focus {
       </div>
     </div>
   </div>
-
   <div class="card">
     <div class="card-title">DATA MANAGEMENT</div>
-    <p style="color:var(--muted);margin-bottom:16px;font-size:13px;">Your data is stored locally in this browser. Export to back it up or move to another device.</p>
+    <p style="color:var(--muted);margin-bottom:16px;font-size:13px;">Your data is stored in Google Sheets. Export creates a local JSON backup.</p>
     <div class="btn-row">
       <button class="btn btn-secondary" onclick="exportData()">⬇ Export Backup</button>
       <button class="btn btn-secondary" onclick="document.getElementById('importFile').click()">⬆ Import Backup</button>
@@ -583,7 +573,6 @@ input:focus, select:focus, textarea:focus {
 
 </main>
 
-<!-- MODALS -->
 <div id="modal-overlay" class="modal-overlay" style="display:none;" onclick="closeModal(event)">
   <div class="modal" id="modal-content"></div>
 </div>
@@ -592,96 +581,106 @@ input:focus, select:focus, textarea:focus {
 
 <script>
 /* =============================================
-   DATA LAYER
-   All data lives in localStorage as JSON
+   DATA LAYER — Google Sheets via Apps Script
 ============================================= */
+const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbygeN80JoiIWBmwdmvv5it4rjfeLsjF2zsa-2gJfxhEo_MDChgChZJzee3Fb60WfV5UnQ/exec";
 
-const DEFAULT_DATA = {
-  accounts: [
-    { id:"CHK", name:"Checking", balance:190 },
-    { id:"SAV", name:"Savings", balance:125 },
-    { id:"CSH", name:"Cash", balance:100 },
-    { id:"GFT", name:"Gift Cards", balance:0 },
-    { id:"OTH", name:"Other", balance:0 }
-  ],
-  income: [
-    { id:"AUTO-250", type:"auto_deposit", description:"Adventure Fund Auto Deposit", amount:250, recurrence:"biweekly", date:"2026-02-12", year:2026, received:false },
-    { id:"INC-2026", type:"incentive", description:"Annual Incentive", amount:5000, recurrence:"one_time", date:"2026-03-25", year:2026, received:false },
-    { id:"BDAY-2026", type:"gift", description:"Birthday", amount:200, recurrence:"one_time", date:"2026-07-03", year:2026, received:false },
-    { id:"XMAS-2026", type:"gift", description:"Christmas", amount:200, recurrence:"one_time", date:"2026-12-25", year:2026, received:false }
-  ],
-  categories: [
-    { id:"ICE", name:"Ice Fishing", budget:300, year:2026 },
-    { id:"FISH", name:"Fishing Equipment", budget:200, year:2026 },
-    { id:"HUNT", name:"Hunting Equipment", budget:1500, year:2026 },
-    { id:"BIKE", name:"Bike Equipment", budget:400, year:2026 },
-    { id:"FUEL", name:"Projected Fuel", budget:2000, year:2026 },
-    { id:"LODG", name:"Projected Lodging", budget:400, year:2026 },
-    { id:"MISC", name:"Other / Misc", budget:0, year:2026 },
-    { id:"EBIKE", name:"eBike Equipment", budget:1500, year:2026 },
-    { id:"WLIC", name:"Wyoming Licenses", budget:500, year:2026 },
-    { id:"OLIC", name:"Other Licenses", budget:0, year:2026 },
-    { id:"PREFP", name:"Preference / Bonus Points", budget:400, year:2026 },
-    { id:"AMMO", name:"Ammo / Reloading", budget:0, year:2026 },
-    { id:"CAMP", name:"Camp / Cabin / Camper", budget:0, year:2026 },
-    { id:"TAX", name:"Taxidermy", budget:150, year:2026 },
-    { id:"DUE", name:"Range Dues", budget:100, year:2026 },
-    { id:"PRO", name:"Potential Purchases", budget:0, year:2026 }
-  ],
-  items: [],
-  trips: [
-    { id:"TR-001", name:"Test Trip", miles:800, vehicle:"Truck", fuelPrice:3.50, lodging:125, status:"planned", year:2026 }
-  ],
-  vehicles: [
-    { name:"Truck", mpg:12.5 },
-    { name:"Truck Towing", mpg:7.0 },
-    { name:"Jeep", mpg:20.0 },
-    { name:"Other", mpg:15.0 }
-  ],
-  yearSettings: [
-    { year:2026, minBalance:9500, autoIncrement:3000 },
-    { year:2027, minBalance:12500, autoIncrement:3000 },
-    { year:2028, minBalance:15500, autoIncrement:3000 }
-  ]
-};
+let _dataCache = null;
 
-function loadData() {
+async function initData() {
   try {
-    const raw = localStorage.getItem("adventureFund_v2");
-    return raw ? JSON.parse(raw) : JSON.parse(JSON.stringify(DEFAULT_DATA));
+    const res = await fetch(APPS_SCRIPT_URL + "?action=load");
+    const json = await res.json();
+    if (json.ok && json.data) {
+      _dataCache = json.data;
+      if (!_dataCache.accounts || !_dataCache.accounts.length) {
+        _dataCache = getDefaultData();
+        await persistData();
+      }
+    } else {
+      console.error("Load failed:", json.error);
+      _dataCache = getDefaultData();
+    }
   } catch(e) {
-    return JSON.parse(JSON.stringify(DEFAULT_DATA));
+    console.error("Network error loading data:", e);
+    _dataCache = getDefaultData();
   }
 }
 
-function saveData(d) {
-  localStorage.setItem("adventureFund_v2", JSON.stringify(d));
-}
-
 function getData() {
-  if(!window._data) window._data = loadData();
-  return window._data;
+  return _dataCache;
 }
 
-function persistData() {
-  saveData(getData());
+async function persistData() {
+  try {
+    await fetch(APPS_SCRIPT_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ action: "save", data: _dataCache })
+    });
+  } catch(e) {
+    console.error("Save failed:", e);
+    toast("Save failed — check connection", true);
+  }
+}
+
+function getDefaultData() {
+  return {
+    accounts: [
+      { id:"CHK", name:"Checking", balance:0 },
+      { id:"SAV", name:"Savings", balance:0 },
+      { id:"CSH", name:"Cash", balance:0 },
+      { id:"GFT", name:"Gift Cards", balance:0 },
+      { id:"OTH", name:"Other", balance:0 }
+    ],
+    income: [
+      { id:"AUTO-250", type:"auto_deposit", description:"Adventure Fund Auto Deposit", amount:250, recurrence:"biweekly", date:"2026-02-12", year:2026, received:false, depositReceipts:{} }
+    ],
+    categories: [
+      { id:"ICE",   name:"Ice Fishing",              budget:300,  year:2026 },
+      { id:"FISH",  name:"Fishing Equipment",         budget:200,  year:2026 },
+      { id:"HUNT",  name:"Hunting Equipment",         budget:1500, year:2026 },
+      { id:"BIKE",  name:"Bike Equipment",            budget:400,  year:2026 },
+      { id:"FUEL",  name:"Projected Fuel",            budget:2000, year:2026 },
+      { id:"LODG",  name:"Projected Lodging",         budget:400,  year:2026 },
+      { id:"MISC",  name:"Other / Misc",              budget:0,    year:2026 },
+      { id:"EBIKE", name:"eBike Equipment",           budget:1500, year:2026 },
+      { id:"WLIC",  name:"Wyoming Licenses",          budget:500,  year:2026 },
+      { id:"OLIC",  name:"Other Licenses",            budget:0,    year:2026 },
+      { id:"PREFP", name:"Preference / Bonus Points", budget:400,  year:2026 },
+      { id:"AMMO",  name:"Ammo / Reloading",          budget:0,    year:2026 },
+      { id:"CAMP",  name:"Camp / Cabin / Camper",     budget:0,    year:2026 },
+      { id:"TAX",   name:"Taxidermy",                 budget:150,  year:2026 },
+      { id:"DUE",   name:"Range Dues",                budget:100,  year:2026 },
+      { id:"PRO",   name:"Potential Purchases",       budget:0,    year:2026 }
+    ],
+    items: [],
+    trips: [],
+    vehicles: [
+      { name:"Truck",        mpg:12.5 },
+      { name:"Truck Towing", mpg:7.0  },
+      { name:"Jeep",         mpg:20.0 },
+      { name:"Other",        mpg:15.0 }
+    ],
+    yearSettings: [
+      { year:2026, minBalance:9500,  autoIncrement:3000 },
+      { year:2027, minBalance:12500, autoIncrement:3000 },
+      { year:2028, minBalance:15500, autoIncrement:3000 }
+    ]
+  };
 }
 
 /* =============================================
-   FUEL CALCULATION — fixed version
-   Takes miles + vehicle name + fuel price per gallon
-   Returns { gallons, fuelCost, total }
+   FUEL CALCULATION
 ============================================= */
 function calcTripCost(miles, vehicleName, fuelPricePerGal, lodging, manualFuelOverride) {
   const d = getData();
   const v = d.vehicles.find(x => x.name === vehicleName);
-  const mpg = v ? v.mpg : 15; // fallback 15mpg if vehicle not found
-
+  const mpg = v ? v.mpg : 15;
   const gallons = miles / mpg;
   const calcFuelCost = gallons * fuelPricePerGal;
   const finalFuel = (manualFuelOverride && manualFuelOverride > 0) ? manualFuelOverride : calcFuelCost;
   const total = finalFuel + (lodging || 0);
-
   return {
     mpg: mpg,
     gallons: +gallons.toFixed(1),
@@ -692,7 +691,7 @@ function calcTripCost(miles, vehicleName, fuelPricePerGal, lodging, manualFuelOv
 }
 
 /* =============================================
-   INCOME PROJECTION — biweekly counting
+   INCOME PROJECTION
 ============================================= */
 function countBiweeklyDeposits(startDateStr, year) {
   const start = new Date(startDateStr + "T12:00:00");
@@ -706,34 +705,26 @@ function countBiweeklyDeposits(startDateStr, year) {
   return count;
 }
 
-// Generate every individual biweekly deposit date for a given income entry + year
 function getBiweeklyDepositDates(startDateStr, year) {
   const start = new Date(startDateStr + "T12:00:00");
   const endOfYear = new Date(year, 11, 31);
   const dates = [];
   let d = new Date(start);
   while(d <= endOfYear) {
-    if(d.getFullYear() === year) {
-      dates.push(new Date(d));
-    }
+    if(d.getFullYear() === year) dates.push(new Date(d));
     d.setDate(d.getDate() + 14);
   }
   return dates;
 }
 
-// Get or create per-deposit received tracking array
 function getBiweeklyReceivedMap(inc, year) {
-  // stored as inc.depositReceipts = { "2026-02-12": true, ... }
   return inc.depositReceipts || {};
 }
 
 function calcYearIncome(year) {
   const d = getData();
   const incomeItems = d.income.filter(i => i.year === year);
-  let total = 0;
-  let received = 0;
-  let pending = 0;
-
+  let total = 0, received = 0, pending = 0;
   for(const inc of incomeItems) {
     if(inc.recurrence === "biweekly") {
       const dates = getBiweeklyDepositDates(inc.date, year);
@@ -750,21 +741,17 @@ function calcYearIncome(year) {
       else pending += inc.amount;
     }
   }
-
   return { total, received, pending };
 }
 
-// Next upcoming biweekly deposit date
 function getNextDepositInfo(year) {
   const d = getData();
   const autoInc = d.income.find(i => i.year === year && i.recurrence === "biweekly");
   if(!autoInc) return null;
-
   const today = new Date();
   today.setHours(0,0,0,0);
   const dates = getBiweeklyDepositDates(autoInc.date, year);
   const receipts = getBiweeklyReceivedMap(autoInc, year);
-
   for(const dt of dates) {
     const key = dt.toISOString().slice(0,10);
     if(!receipts[key]) {
@@ -772,27 +759,21 @@ function getNextDepositInfo(year) {
       return { date: dt, key, daysAway: diff, amount: autoInc.amount, incId: autoInc.id };
     }
   }
-  return null; // all received
+  return null;
 }
 
 /* =============================================
    TRIP → CATEGORY PROJECTIONS
-   planned + booked trips feed FUEL and LODG
-   completed trips are excluded from forecast
 ============================================= */
 function calcTripCategoryProjections(year) {
   const d = getData();
   const activeTrips = d.trips.filter(t => t.year === year && t.status !== "completed");
-
-  let projFuel = 0;
-  let projLodging = 0;
-
+  let projFuel = 0, projLodging = 0;
   for(const t of activeTrips) {
     const calc = calcTripCost(t.miles, t.vehicle, t.fuelPrice, t.lodging, t.manualFuel);
     projFuel += calc.finalFuel;
     projLodging += t.lodging || 0;
   }
-
   return { projFuel, projLodging, activeTrips };
 }
 
@@ -802,50 +783,25 @@ function calcTripCategoryProjections(year) {
 function calcDashboard(year) {
   const d = getData();
   const totalFund = d.accounts.reduce((s,a) => s + a.balance, 0);
-
   const ys = d.yearSettings.find(y => y.year === year) || { minBalance:0, autoIncrement:0 };
-
-  // Income
   const incomeData = calcYearIncome(year);
-
-  // Category planned spend — FUEL and LODG get overridden by trip projections
   const cats = d.categories.filter(c => c.year === year);
   const tripProj = calcTripCategoryProjections(year);
-
   let catBudgetTotal = 0;
   for(const c of cats) {
-    if(c.id === "FUEL") {
-      // Use whichever is larger: manual budget or trip projection
-      catBudgetTotal += Math.max(c.budget || 0, tripProj.projFuel);
-    } else if(c.id === "LODG") {
-      catBudgetTotal += Math.max(c.budget || 0, tripProj.projLodging);
-    } else {
-      catBudgetTotal += c.budget || 0;
-    }
+    if(c.id === "FUEL") catBudgetTotal += Math.max(c.budget || 0, tripProj.projFuel);
+    else if(c.id === "LODG") catBudgetTotal += Math.max(c.budget || 0, tripProj.projLodging);
+    else catBudgetTotal += c.budget || 0;
   }
-
-  // Trip totals (all trips, for display)
   const allTrips = d.trips.filter(t => t.year === year);
   const tripTotal = allTrips.reduce((s,t) => {
     const calc = calcTripCost(t.miles, t.vehicle, t.fuelPrice, t.lodging, t.manualFuel);
     return s + calc.total;
   }, 0);
-
   const plannedSpend = catBudgetTotal;
   const projectedEnd = totalFund + incomeData.pending - plannedSpend;
   const gap = projectedEnd - (ys.minBalance || 0);
-
-  return {
-    totalFund,
-    plannedSpend,
-    tripTotal,
-    tripProj,
-    projectedEnd,
-    goal: ys.minBalance,
-    gap,
-    incomeData,
-    ys
-  };
+  return { totalFund, plannedSpend, tripTotal, tripProj, projectedEnd, goal: ys.minBalance, gap, incomeData, ys };
 }
 
 /* =============================================
@@ -866,13 +822,11 @@ function openModal(html) {
   document.getElementById("modal-content").innerHTML = html;
   document.getElementById("modal-overlay").style.display = "flex";
 }
-
 function closeModal(e) {
   if(!e || e.target === document.getElementById("modal-overlay")) {
     document.getElementById("modal-overlay").style.display = "none";
   }
 }
-
 function closeModalDirect() {
   document.getElementById("modal-overlay").style.display = "none";
 }
@@ -914,7 +868,6 @@ function promptAddYear() {
   const nextDefault = Math.max(...years) + 1;
   openModal(`
     <div class="modal-title">ADD NEW YEAR</div>
-    <p style="color:var(--muted);font-size:13px;margin-bottom:16px;">Creates a new year in the fund. Copy categories from an existing year to save setup time.</p>
     <div class="form-row">
       <div class="form-group">
         <label>Year</label>
@@ -987,8 +940,6 @@ function initNav() {
     checkNewYearSetup(currentYear);
     renderPage(currentPage);
   });
-
-  // Tabs
   document.querySelectorAll(".nav-tab").forEach(tab => {
     tab.addEventListener("click", () => {
       document.querySelectorAll(".nav-tab").forEach(t => t.classList.remove("active"));
@@ -1002,7 +953,6 @@ function initNav() {
 function renderPage(page) {
   document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
   document.getElementById("page-"+page)?.classList.add("active");
-
   if(page==="dashboard") renderDashboard();
   else if(page==="accounts") renderAccounts();
   else if(page==="income") renderIncome();
@@ -1034,10 +984,7 @@ function renderDashboard() {
   const year = currentYear;
   const dash = calcDashboard(year);
   const d = getData();
-
   document.getElementById("dash-year-label").textContent = `${year} Adventure Fund`;
-
-  // Stat cards
   const gapColor = dash.gap >= 0 ? "green" : "red";
   document.getElementById("dash-stats").innerHTML = `
     <div class="stat-card">
@@ -1061,8 +1008,6 @@ function renderDashboard() {
       <div class="stat-sub">vs ${fmt$(dash.goal)} goal</div>
     </div>
   `;
-
-  // Fund health
   const pct = dash.goal > 0 ? Math.min(100, ((dash.totalFund + dash.incomeData.pending) / (dash.goal + dash.plannedSpend)) * 100) : 0;
   document.getElementById("dash-health").innerHTML = `
     <div class="progress-wrap">
@@ -1086,8 +1031,6 @@ function renderDashboard() {
       <div><span style="color:var(--muted)">Increment Target: </span><span class="mono">+${fmt$(dash.ys.autoIncrement)}</span></div>
     </div>
   `;
-
-  // Next deposit banner
   const nextDep = getNextDepositInfo(year);
   const nextDepBanner = nextDep ? (() => {
     const daysAway = nextDep.daysAway;
@@ -1104,13 +1047,9 @@ function renderDashboard() {
       </div>
     </div>`;
   })() : '';
-
   document.getElementById("dash-next-deposit").innerHTML = nextDepBanner;
-
-  // Upcoming income (non-biweekly one-time items)
   const upcoming = d.income.filter(i => i.year === year && !i.received && i.recurrence !== "biweekly")
-    .sort((a,b) => new Date(a.date) - new Date(b.date))
-    .slice(0, 5);
+    .sort((a,b) => new Date(a.date) - new Date(b.date)).slice(0, 5);
   document.getElementById("dash-upcoming-income").innerHTML = upcoming.length ? upcoming.map(i => {
     return `<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border);">
       <div>
@@ -1120,8 +1059,6 @@ function renderDashboard() {
       <div class="mono" style="color:var(--green);">${fmt$(i.amount)}</div>
     </div>`;
   }).join("") : '<div style="color:var(--muted);font-size:13px;padding:8px 0;">No pending one-time income</div>';
-
-  // Categories preview
   const cats = d.categories.filter(c => c.year === year && c.budget > 0)
     .sort((a,b) => b.budget - a.budget).slice(0, 8);
   document.getElementById("dash-categories").innerHTML = cats.map(c => {
@@ -1136,8 +1073,6 @@ function renderDashboard() {
       <div class="progress-bar"><div class="progress-fill ${pct>90?'red':pct>60?'yellow':'green'}" style="width:${pct||2}%"></div></div>
     </div>`;
   }).join("") || '<div class="empty">No categories set up</div>';
-
-  // Trips preview
   const trips = d.trips.filter(t => t.year === year);
   document.getElementById("dash-trips").innerHTML = trips.length ? trips.map(t => {
     const calc = calcTripCost(t.miles, t.vehicle, t.fuelPrice, t.lodging, t.manualFuel);
@@ -1160,22 +1095,16 @@ function renderDashboard() {
 function renderAccounts() {
   const d = getData();
   const total = d.accounts.reduce((s,a)=>s+a.balance, 0);
-
-  // Balance inputs
   document.getElementById("account-inputs").innerHTML = d.accounts.map(a => `
     <div class="account-row">
       <div class="account-name">${a.name}</div>
       <input class="account-input" type="number" id="bal-${a.id}" value="${a.balance}" min="0" step="0.01" placeholder="0.00">
     </div>
   `).join("");
-
-  // Transfer dropdowns
   ["transfer-from","transfer-to"].forEach(id => {
     const sel = document.getElementById(id);
     sel.innerHTML = d.accounts.map(a => `<option value="${a.id}">${a.name} (${fmt$(a.balance)})</option>`).join("");
   });
-
-  // Summary table
   document.getElementById("account-summary-table").innerHTML = d.accounts.map(a => `
     <tr>
       <td>${a.name}</td>
@@ -1188,37 +1117,33 @@ function renderAccounts() {
       </td>
     </tr>
   `).join("");
-
   document.getElementById("account-total").textContent = fmt$(total);
 }
 
-function saveBalances() {
+async function saveBalances() {
   const d = getData();
   d.accounts.forEach(a => {
     const el = document.getElementById("bal-"+a.id);
     if(el) a.balance = parseFloat(el.value)||0;
   });
-  persistData();
+  await persistData();
   toast("Balances saved!");
   renderAccounts();
 }
 
-function doTransfer() {
+async function doTransfer() {
   const fromId = document.getElementById("transfer-from").value;
   const toId = document.getElementById("transfer-to").value;
   const amount = parseFloat(document.getElementById("transfer-amount").value)||0;
-
   if(fromId === toId) { toast("Pick different accounts", true); return; }
   if(amount <= 0) { toast("Enter an amount", true); return; }
-
   const d = getData();
   const from = d.accounts.find(a=>a.id===fromId);
   const to = d.accounts.find(a=>a.id===toId);
   if(from.balance < amount) { toast("Insufficient balance in "+from.name, true); return; }
-
   from.balance = +(from.balance - amount).toFixed(2);
   to.balance = +(to.balance + amount).toFixed(2);
-  persistData();
+  await persistData();
   document.getElementById("transfer-amount").value = "";
   toast(`Transferred ${fmt$(amount)} from ${from.name} to ${to.name}`);
   renderAccounts();
@@ -1232,7 +1157,6 @@ function renderIncome() {
   const d = getData();
   const incomeItems = d.income.filter(i => i.year === year);
   const incomeData = calcYearIncome(year);
-
   document.getElementById("income-stats").innerHTML = `
     <div class="stat-card">
       <div class="stat-label">Total Expected</div>
@@ -1247,20 +1171,14 @@ function renderIncome() {
       <div class="stat-value" style="color:var(--yellow)">${fmt$(incomeData.pending)}</div>
     </div>
   `;
-
-  // Split biweekly from one-time
   const biweekly = incomeItems.filter(i => i.recurrence === "biweekly");
   const oneTime = incomeItems.filter(i => i.recurrence !== "biweekly");
-
   let html = "";
-
-  // Biweekly section — each deposit listed individually
   for(const inc of biweekly) {
     const dates = getBiweeklyDepositDates(inc.date, year);
     const receipts = inc.depositReceipts || {};
     const receivedCount = dates.filter(dt => receipts[dt.toISOString().slice(0,10)]).length;
     const today = new Date(); today.setHours(0,0,0,0);
-
     html += `<div class="card" style="margin-bottom:16px;">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:8px;">
         <div>
@@ -1295,8 +1213,6 @@ function renderIncome() {
       </table></div>
     </div>`;
   }
-
-  // One-time income section
   if(oneTime.length) {
     html += `<div class="card">
       <div class="card-title">ONE-TIME INCOME</div>
@@ -1318,34 +1234,33 @@ function renderIncome() {
       </table></div>
     </div>`;
   }
-
   document.getElementById("income-table-wrap").innerHTML = html ||
     `<div class="empty">No income for ${year} — add some above</div>`;
 }
 
-function toggleIncomeReceived(id, val) {
+async function toggleIncomeReceived(id, val) {
   const d = getData();
   const inc = d.income.find(i=>i.id===id);
-  if(inc) { inc.received = val; persistData(); renderIncome(); }
+  if(inc) { inc.received = val; await persistData(); renderIncome(); }
 }
 
-function markDepositReceived(incId, dateKey, val) {
+async function markDepositReceived(incId, dateKey, val) {
   const d = getData();
   const inc = d.income.find(i=>i.id===incId);
   if(!inc) return;
   if(!inc.depositReceipts) inc.depositReceipts = {};
   if(val) inc.depositReceipts[dateKey] = true;
   else delete inc.depositReceipts[dateKey];
-  persistData();
+  await persistData();
   renderIncome();
   if(val) toast("Deposit marked received ✓");
 }
 
-function deleteIncome(id) {
+async function deleteIncome(id) {
   if(!confirm("Delete this income entry?")) return;
   const d = getData();
   d.income = d.income.filter(i=>i.id!==id);
-  persistData();
+  await persistData();
   toast("Deleted");
   renderIncome();
 }
@@ -1354,7 +1269,7 @@ function openSideJobModal() {
   const today = new Date().toISOString().slice(0,10);
   openModal(`
     <div class="modal-title">SIDE JOB / ODD JOB</div>
-    <p style="color:var(--muted);font-size:13px;margin-bottom:16px;">Quick-add a one-time payment into the fund — side work, odd jobs, selling gear, whatever.</p>
+    <p style="color:var(--muted);font-size:13px;margin-bottom:16px;">Quick-add a one-time payment into the fund.</p>
     <div class="form-group" style="margin-bottom:12px;">
       <label>What was the job?</label>
       <input type="text" id="m-sj-desc" placeholder="e.g. Helped neighbor move, sold old rifle scope…">
@@ -1382,17 +1297,13 @@ function openSideJobModal() {
   `);
 }
 
-function saveSideJob() {
+async function saveSideJob() {
   const desc = document.getElementById("m-sj-desc").value.trim();
   const amt = parseFloat(document.getElementById("m-sj-amt").value)||0;
   const date = document.getElementById("m-sj-date").value;
   const accountId = document.getElementById("m-sj-account").value;
-
   if(!desc || !amt) { toast("Fill in description and amount", true); return; }
-
   const d = getData();
-
-  // Add to income ledger as received
   d.income.push({
     id: "SJ-"+Date.now(),
     type: "side_job",
@@ -1403,19 +1314,15 @@ function saveSideJob() {
     year: currentYear,
     received: true
   });
-
-  // Also credit the chosen account balance
   const acct = d.accounts.find(a => a.id === accountId);
   if(acct) acct.balance = +(acct.balance + amt).toFixed(2);
-
-  persistData();
+  await persistData();
   closeModalDirect();
   toast(`${fmt$(amt)} added to fund from: ${desc}`);
   renderIncome();
 }
 
 function openIncomeModal() {
-  const d = getData();
   openModal(`
     <div class="modal-title">ADD INCOME</div>
     <div class="form-row">
@@ -1460,22 +1367,20 @@ function openIncomeModal() {
   `);
 }
 
-function saveIncome() {
+async function saveIncome() {
   const desc = document.getElementById("m-inc-desc").value.trim();
   const type = document.getElementById("m-inc-type").value;
   const amt = parseFloat(document.getElementById("m-inc-amt").value)||0;
   const rec = document.getElementById("m-inc-rec").value;
   const date = document.getElementById("m-inc-date").value;
-
   if(!desc || !amt) { toast("Fill in description and amount", true); return; }
-
   const d = getData();
   d.income.push({
     id: "INC-"+Date.now(),
     type, description:desc, amount:amt,
     recurrence:rec, date, year:currentYear, received:false
   });
-  persistData();
+  await persistData();
   closeModalDirect();
   toast("Income added!");
   renderIncome();
@@ -1490,37 +1395,28 @@ function renderCategories() {
   const cats = d.categories.filter(c => c.year === year);
   const items = d.items.filter(i => i.year === year);
   const tripProj = calcTripCategoryProjections(year);
-
   if(!cats.length) {
     document.getElementById("categories-list").innerHTML = `<div class="empty"><div class="empty-icon">📁</div><div>No categories for ${year}</div></div>`;
     return;
   }
-
   document.getElementById("categories-list").innerHTML = cats.map(cat => {
     const catItems = items.filter(i => i.category === cat.id);
     const purchased = catItems.filter(i=>i.status==="purchased").reduce((s,i)=>s+i.cost,0);
     const committed = catItems.filter(i=>i.status==="commit").reduce((s,i)=>s+i.cost,0);
-
-    // Trip projections for FUEL and LODG
     const isFuel = cat.id === "FUEL";
     const isLodg = cat.id === "LODG";
     const tripProjected = isFuel ? tripProj.projFuel : isLodg ? tripProj.projLodging : 0;
     const tripCount = isFuel || isLodg ? tripProj.activeTrips.length : 0;
-
-    // Effective projected spend = manual items + trip projection
     const totalProjected = purchased + committed + tripProjected;
     const remaining = cat.budget - totalProjected;
-
     const spendPct = cat.budget > 0 ? Math.min(100, (purchased/cat.budget)*100) : 0;
     const commitPct = cat.budget > 0 ? Math.min(100-spendPct, (committed/cat.budget)*100) : 0;
     const tripPct = cat.budget > 0 ? Math.min(100-spendPct-commitPct, (tripProjected/cat.budget)*100) : 0;
-
     const tripBadge = (isFuel || isLodg) && tripProjected > 0 ? `
       <div style="margin-top:8px;padding:8px 10px;background:rgba(58,126,232,0.08);border:1px solid rgba(58,126,232,0.2);border-radius:6px;font-size:12px;display:flex;justify-content:space-between;align-items:center;">
         <span style="color:var(--accent2);">🗺 From ${tripCount} active trip${tripCount===1?'':'s'}</span>
         <span class="mono" style="color:var(--accent2);">${fmt$(tripProjected)}</span>
       </div>` : '';
-
     return `<div class="card" style="margin-bottom:12px;">
       <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;flex-wrap:wrap;gap:8px;">
         <div>
@@ -1571,26 +1467,26 @@ function renderCategories() {
   }).join("");
 }
 
-function updateItemStatus(itemId, status) {
+async function updateItemStatus(itemId, status) {
   const d = getData();
   const item = d.items.find(i=>i.id===itemId);
-  if(item) { item.status = status; persistData(); renderCategories(); }
+  if(item) { item.status = status; await persistData(); renderCategories(); }
 }
 
-function deleteItem(itemId) {
+async function deleteItem(itemId) {
   const d = getData();
   d.items = d.items.filter(i=>i.id!==itemId);
-  persistData();
+  await persistData();
   toast("Item deleted");
   renderCategories();
 }
 
-function deleteCategory(catId) {
+async function deleteCategory(catId) {
   if(!confirm("Delete this category and all its items?")) return;
   const d = getData();
   d.categories = d.categories.filter(c=>c.id!==catId);
   d.items = d.items.filter(i=>i.category!==catId);
-  persistData();
+  await persistData();
   toast("Category deleted");
   renderCategories();
 }
@@ -1612,11 +1508,11 @@ function editCategoryBudget(catId) {
   `);
 }
 
-function saveCategoryBudget(catId) {
+async function saveCategoryBudget(catId) {
   const val = parseFloat(document.getElementById("m-cat-budget").value)||0;
   const d = getData();
   const cat = d.categories.find(c=>c.id===catId);
-  if(cat) { cat.budget = val; persistData(); }
+  if(cat) { cat.budget = val; await persistData(); }
   closeModalDirect();
   toast("Budget updated!");
   renderCategories();
@@ -1646,7 +1542,7 @@ function openCategoryModal() {
   `);
 }
 
-function saveCategory() {
+async function saveCategory() {
   const name = document.getElementById("m-cat-name").value.trim();
   const id = document.getElementById("m-cat-id").value.trim().toUpperCase();
   const budget = parseFloat(document.getElementById("m-cat-budget2").value)||0;
@@ -1654,7 +1550,7 @@ function saveCategory() {
   const d = getData();
   if(d.categories.find(c=>c.id===id && c.year===currentYear)) { toast("ID already exists", true); return; }
   d.categories.push({ id, name, budget, year:currentYear });
-  persistData();
+  await persistData();
   closeModalDirect();
   toast("Category added!");
   renderCategories();
@@ -1696,7 +1592,7 @@ function openItemModal(presetCategoryId) {
   `);
 }
 
-function saveItem() {
+async function saveItem() {
   const cat = document.getElementById("m-item-cat").value;
   const desc = document.getElementById("m-item-desc").value.trim();
   const cost = parseFloat(document.getElementById("m-item-cost").value)||0;
@@ -1704,7 +1600,7 @@ function saveItem() {
   if(!desc || !cost) { toast("Fill in description and cost", true); return; }
   const d = getData();
   d.items.push({ id:"IT-"+Date.now(), category:cat, description:desc, cost, status, year:currentYear });
-  persistData();
+  await persistData();
   closeModalDirect();
   toast("Item added!");
   renderCategories();
@@ -1717,12 +1613,10 @@ function renderTrips() {
   const year = currentYear;
   const d = getData();
   const trips = d.trips.filter(t => t.year === year);
-
   const tripCalcs = trips.map(t => ({ ...t, calc: calcTripCost(t.miles, t.vehicle, t.fuelPrice, t.lodging, t.manualFuel) }));
   const totalFuel = tripCalcs.reduce((s,t)=>s+t.calc.finalFuel, 0);
   const totalLodging = tripCalcs.reduce((s,t)=>s+t.lodging, 0);
   const totalCost = tripCalcs.reduce((s,t)=>s+t.calc.total, 0);
-
   document.getElementById("trip-stats").innerHTML = `
     <div class="stat-card">
       <div class="stat-label">Total Trip Cost</div>
@@ -1737,7 +1631,6 @@ function renderTrips() {
       <div class="stat-value" style="color:var(--accent2)">${fmt$(totalLodging)}</div>
     </div>
   `;
-
   document.getElementById("trips-table").innerHTML = tripCalcs.length ? tripCalcs.map(t => `
     <tr>
       <td style="font-weight:500;">${t.name}</td>
@@ -1760,7 +1653,6 @@ function renderTrips() {
 function openTripModal(tripId) {
   const d = getData();
   const trip = tripId ? d.trips.find(t=>t.id===tripId) : null;
-
   openModal(`
     <div class="modal-title">${trip?"EDIT TRIP":"ADD TRIP"}</div>
     <div class="form-group" style="margin-bottom:12px;">
@@ -1811,8 +1703,6 @@ function openTripModal(tripId) {
       <button class="btn btn-secondary" onclick="closeModalDirect()">Cancel</button>
     </div>
   `);
-
-  // Hook up live preview for miles change too
   document.getElementById("m-trip-miles").addEventListener("input", previewFuelCalc);
   document.getElementById("m-trip-vehicle").addEventListener("change", previewFuelCalc);
   if(trip) previewFuelCalc();
@@ -1826,12 +1716,10 @@ function previewFuelCalc() {
   const lodging = parseFloat(document.getElementById("m-trip-lodging")?.value)||0;
   const preview = document.getElementById("m-fuel-preview");
   if(!preview) return;
-
   if(!miles || !fuelPrice) {
     preview.innerHTML = `<span>Enter miles and fuel price to preview</span>`;
     return;
   }
-
   const calc = calcTripCost(miles, vehicle, fuelPrice, lodging, manualFuel);
   preview.innerHTML = `
     <span style="color:var(--text);">⛽ ${calc.gallons} gallons</span>
@@ -1850,7 +1738,7 @@ function previewFuelCalc() {
 
 function editTrip(tripId) { openTripModal(tripId); }
 
-function saveTrip(tripId) {
+async function saveTrip(tripId) {
   const name = document.getElementById("m-trip-name").value.trim();
   const vehicle = document.getElementById("m-trip-vehicle").value;
   const miles = parseFloat(document.getElementById("m-trip-miles").value)||0;
@@ -1858,9 +1746,7 @@ function saveTrip(tripId) {
   const manualFuel = parseFloat(document.getElementById("m-trip-manual-fuel").value)||0;
   const lodging = parseFloat(document.getElementById("m-trip-lodging").value)||0;
   const status = document.getElementById("m-trip-status").value;
-
   if(!name || !miles) { toast("Fill in trip name and miles", true); return; }
-
   const d = getData();
   if(tripId) {
     const trip = d.trips.find(t=>t.id===tripId);
@@ -1868,17 +1754,17 @@ function saveTrip(tripId) {
   } else {
     d.trips.push({ id:"TR-"+Date.now(), name, vehicle, miles, fuelPrice, manualFuel:manualFuel||null, lodging, status, year:currentYear });
   }
-  persistData();
+  await persistData();
   closeModalDirect();
   toast(tripId ? "Trip updated!" : "Trip added!");
   renderTrips();
 }
 
-function deleteTrip(tripId) {
+async function deleteTrip(tripId) {
   if(!confirm("Delete this trip?")) return;
   const d = getData();
   d.trips = d.trips.filter(t=>t.id!==tripId);
-  persistData();
+  await persistData();
   toast("Trip deleted");
   renderTrips();
 }
@@ -1890,7 +1776,6 @@ function renderSettings() {
   const d = getData();
   const year = currentYear;
   const ys = d.yearSettings.find(y=>y.year===year) || { year, minBalance:0, autoIncrement:0 };
-
   document.getElementById("year-settings-form").innerHTML = `
     <div class="form-row">
       <div class="form-group">
@@ -1902,9 +1787,8 @@ function renderSettings() {
         <input type="number" id="s-auto-inc" value="${ys.autoIncrement||0}" min="0" step="500">
       </div>
     </div>
-    <p style="font-size:12px;color:var(--muted);">These are the targets for ${year}. The dashboard surplus/gap is calculated against the Year Goal.</p>
+    <p style="font-size:12px;color:var(--muted);">These are the targets for ${year}.</p>
   `;
-
   document.getElementById("vehicle-list").innerHTML = d.vehicles.map((v,i) => `
     <div class="account-row">
       <div class="account-name">${v.name}</div>
@@ -1914,7 +1798,7 @@ function renderSettings() {
   `).join("");
 }
 
-function saveYearSettings() {
+async function saveYearSettings() {
   const minBalance = parseFloat(document.getElementById("s-min-bal").value)||0;
   const autoIncrement = parseFloat(document.getElementById("s-auto-inc").value)||0;
   const d = getData();
@@ -1922,28 +1806,28 @@ function saveYearSettings() {
   if(!ys) { ys = {year:currentYear}; d.yearSettings.push(ys); }
   ys.minBalance = minBalance;
   ys.autoIncrement = autoIncrement;
-  persistData();
+  await persistData();
   toast("Settings saved!");
 }
 
-function addVehicle() {
+async function addVehicle() {
   const name = document.getElementById("new-vehicle-name").value.trim();
   const mpg = parseFloat(document.getElementById("new-vehicle-mpg").value)||0;
   if(!name || !mpg) { toast("Enter name and MPG", true); return; }
   const d = getData();
   if(d.vehicles.find(v=>v.name===name)) { toast("Vehicle already exists", true); return; }
   d.vehicles.push({name, mpg});
-  persistData();
+  await persistData();
   document.getElementById("new-vehicle-name").value = "";
   document.getElementById("new-vehicle-mpg").value = "";
   toast("Vehicle added!");
   renderSettings();
 }
 
-function deleteVehicle(idx) {
+async function deleteVehicle(idx) {
   const d = getData();
   d.vehicles.splice(idx, 1);
-  persistData();
+  await persistData();
   toast("Vehicle removed");
   renderSettings();
 }
@@ -1961,16 +1845,16 @@ function exportData() {
   toast("Backup exported!");
 }
 
-function importData(event) {
+async function importData(event) {
   const file = event.target.files[0];
   if(!file) return;
   const reader = new FileReader();
-  reader.onload = e => {
+  reader.onload = async e => {
     try {
       const imported = JSON.parse(e.target.result);
       if(!imported.accounts || !imported.categories) throw new Error("Invalid format");
-      window._data = imported;
-      persistData();
+      _dataCache = imported;
+      await persistData();
       toast("Data imported successfully!");
       renderPage(currentPage);
     } catch(err) {
@@ -1981,11 +1865,11 @@ function importData(event) {
   event.target.value = "";
 }
 
-function confirmReset() {
+async function confirmReset() {
   if(!confirm("⚠ This will permanently delete ALL your data and reset to defaults. Are you sure?")) return;
   if(!confirm("Really sure? This cannot be undone.")) return;
-  localStorage.removeItem("adventureFund_v2");
-  window._data = null;
+  _dataCache = getDefaultData();
+  await persistData();
   toast("Data reset to defaults");
   setTimeout(() => location.reload(), 1000);
 }
@@ -1994,17 +1878,11 @@ function confirmReset() {
    INIT
 ============================================= */
 document.addEventListener("DOMContentLoaded", async () => {
-  showLoadingOverlay(true);
   await initData();
-  showLoadingOverlay(false);
+  document.getElementById("loading-overlay").classList.add("hidden");
   initNav();
   renderDashboard();
 });
-
-function showLoadingOverlay(on) {
-  // Simple loading state — disable nav during initial fetch
-  document.querySelectorAll(".nav-tab").forEach(t => t.style.pointerEvents = on ? "none" : "");
-}
 </script>
 </body>
 </html>
