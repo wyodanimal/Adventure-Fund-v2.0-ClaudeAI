@@ -1993,12 +1993,18 @@ function confirmReset() {
 /* =============================================
    INIT
 ============================================= */
-document.addEventListener("DOMContentLoaded", () => {
-  // Make sure defaults are loaded
-  getData();
+document.addEventListener("DOMContentLoaded", async () => {
+  showLoadingOverlay(true);
+  await initData();
+  showLoadingOverlay(false);
   initNav();
   renderDashboard();
 });
+
+function showLoadingOverlay(on) {
+  // Simple loading state — disable nav during initial fetch
+  document.querySelectorAll(".nav-tab").forEach(t => t.style.pointerEvents = on ? "none" : "");
+}
 </script>
 </body>
 </html>
