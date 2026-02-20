@@ -614,7 +614,12 @@ function getData() {
 async function persistData() {
   try {
     const payload = encodeURIComponent(JSON.stringify(_dataCache));
-    await fetch(APPS_SCRIPT_URL + "?action=save&data=" + payload);
+    const res = await fetch(APPS_SCRIPT_URL + "?action=save&data=" + payload);
+    const json = await res.json();
+    if (!json.ok) {
+      console.error("Save error from server:", json.error);
+      toast("Save failed: " + (json.error || "unknown error"), true);
+    }
   } catch(e) {
     console.error("Save failed:", e);
     toast("Save failed — check connection", true);
