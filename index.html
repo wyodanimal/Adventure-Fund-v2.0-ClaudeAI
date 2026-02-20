@@ -613,11 +613,8 @@ function getData() {
 
 async function persistData() {
   try {
-    await fetch(APPS_SCRIPT_URL, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ action: "save", data: _dataCache })
-    });
+    const payload = encodeURIComponent(JSON.stringify(_dataCache));
+    await fetch(APPS_SCRIPT_URL + "?action=save&data=" + payload);
   } catch(e) {
     console.error("Save failed:", e);
     toast("Save failed — check connection", true);
