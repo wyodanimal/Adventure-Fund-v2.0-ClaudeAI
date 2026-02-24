@@ -1063,7 +1063,7 @@ function renderDashboard() {
     </div>`;
   }).join("") : '<div style="color:var(--muted);font-size:13px;padding:8px 0;">No pending one-time income</div>';
   const cats = d.categories.filter(c => c.year === year && c.budget > 0)
-    .sort((a,b) => b.budget - a.budget).slice(0, 8);
+    .sort((a,b) => b.budget - a.budget);
   document.getElementById("dash-categories").innerHTML = cats.map(c => {
     const items = d.items.filter(i => i.year === year && i.category === c.id);
     const spent = items.filter(i => i.status==="purchased").reduce((s,i)=>s+i.cost,0);
