@@ -1062,8 +1062,7 @@ function renderDashboard() {
       <div class="mono" style="color:var(--green);">${fmt$(i.amount)}</div>
     </div>`;
   }).join("") : '<div style="color:var(--muted);font-size:13px;padding:8px 0;">No pending one-time income</div>';
-  const cats = d.categories.filter(c => c.year === year && c.budget > 0)
-    .sort((a,b) => b.budget - a.budget);
+  const cats = d.categories.filter(c => c.year === year && c.budget > 0).sort((a,b) => a.name.localeCompare(b.name));
   document.getElementById("dash-categories").innerHTML = cats.map(c => {
     const items = d.items.filter(i => i.year === year && i.category === c.id);
     const spent = items.filter(i => i.status==="purchased").reduce((s,i)=>s+i.cost,0);
@@ -1076,7 +1075,7 @@ function renderDashboard() {
       <div class="progress-bar"><div class="progress-fill ${pct>90?'red':pct>60?'yellow':'green'}" style="width:${pct||2}%"></div></div>
     </div>`;
   }).join("") || '<div class="empty">No categories set up</div>';
-  const trips = d.trips.filter(t => t.year === year);
+  const trips = d.trips.filter(t => t.year === year).sort((a,b) => new Date(a.date) - new Date(b.date));
   document.getElementById("dash-trips").innerHTML = trips.length ? trips.map(t => {
     const calc = calcTripCost(t.miles, t.vehicle, t.fuelPrice, t.lodging, t.manualFuel);
     return `<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border);">
