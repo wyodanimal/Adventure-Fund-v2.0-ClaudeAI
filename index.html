@@ -519,7 +519,7 @@ input:focus, select:focus, textarea:focus {
     <div class="table-wrap">
       <table>
         <thead><tr>
-          <th>Trip</th><th>Vehicle</th><th>Miles</th><th>MPG</th>
+          <th>Trip</th><th>Date</th><th>Vehicle</th><th>Miles</th><th>MPG</th>
           <th>Fuel $/gal</th><th>Fuel Cost</th><th>Lodging</th><th>Total</th><th>Status</th><th></th>
         </tr></thead>
         <tbody id="trips-table"></tbody>
@@ -620,7 +620,6 @@ async function persistData() {
       headers: { "Content-Type": "text/plain" },
       body: payload
     });
-    // can't read response in no-cors, so verify by checking sheet manually
   } catch(e) {
     console.error("Save failed:", e);
     toast("Save failed — check connection", true);
@@ -979,6 +978,11 @@ function fmtDate(str) {
   const d = new Date(str+"T12:00:00");
   return d.toLocaleDateString("en-US", {month:"short", day:"numeric"});
 }
+function fmtDateFull(str) {
+  if(!str) return "—";
+  const d = new Date(str+"T12:00:00");
+  return d.toLocaleDateString("en-US", {month:"short", day:"numeric", year:"numeric"});
+}
 
 /* =============================================
    DASHBOARD RENDER
@@ -1062,7 +1066,10 @@ function renderDashboard() {
       <div class="mono" style="color:var(--green);">${fmt$(i.amount)}</div>
     </div>`;
   }).join("") : '<div style="color:var(--muted);font-size:13px;padding:8px 0;">No pending one-time income</div>';
-  const cats = d.categories.filter(c => c.year === year && c.budget > 0).sort((a,b) => a.name.localeCompare(b.name));
+
+  // Category spend — alphabetical, all budgeted categories
+  const cats = d.categories.filter(c => c.year === year && c.budget > 0)
+    .sort((a,b) => a.name.localeCompare(b.name));
   document.getElementById("dash-categories").innerHTML = cats.map(c => {
     const items = d.items.filter(i => i.year === year && i.category === c.id);
     const spent = items.filter(i => i.status==="purchased").reduce((s,i)=>s+i.cost,0);
@@ -1075,13 +1082,21 @@ function renderDashboard() {
       <div class="progress-bar"><div class="progress-fill ${pct>90?'red':pct>60?'yellow':'green'}" style="width:${pct||2}%"></div></div>
     </div>`;
   }).join("") || '<div class="empty">No categories set up</div>';
-  const trips = d.trips.filter(t => t.year === year).sort((a,b) => new Date(a.date) - new Date(b.date));
+
+  // Trips — sorted by date ascending (no date = bottom)
+  const trips = d.trips.filter(t => t.year === year)
+    .sort((a,b) => {
+      if(!a.tripDate && !b.tripDate) return 0;
+      if(!a.tripDate) return 1;
+      if(!b.tripDate) return -1;
+      return new Date(a.tripDate) - new Date(b.tripDate);
+    });
   document.getElementById("dash-trips").innerHTML = trips.length ? trips.map(t => {
     const calc = calcTripCost(t.miles, t.vehicle, t.fuelPrice, t.lodging, t.manualFuel);
     return `<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border);">
       <div>
         <div style="font-weight:500;">${t.name}</div>
-        <div style="font-size:12px;color:var(--muted);">${t.vehicle} · ${t.miles} mi · ${calc.mpg}mpg</div>
+        <div style="font-size:12px;color:var(--muted);">${t.tripDate ? fmtDate(t.tripDate)+' · ' : ''}${t.vehicle} · ${t.miles} mi · ${calc.mpg}mpg</div>
       </div>
       <div style="text-align:right">
         <div class="mono" style="color:var(--accent)">${fmt$(calc.total)}</div>
@@ -1394,7 +1409,9 @@ async function saveIncome() {
 function renderCategories() {
   const year = currentYear;
   const d = getData();
-  const cats = d.categories.filter(c => c.year === year);
+  // Alphabetical order
+  const cats = d.categories.filter(c => c.year === year)
+    .sort((a,b) => a.name.localeCompare(b.name));
   const items = d.items.filter(i => i.year === year);
   const tripProj = calcTripCategoryProjections(year);
   if(!cats.length) {
@@ -1560,7 +1577,7 @@ async function saveCategory() {
 
 function openItemModal(presetCategoryId) {
   const d = getData();
-  const cats = d.categories.filter(c=>c.year===currentYear);
+  const cats = d.categories.filter(c=>c.year===currentYear).sort((a,b)=>a.name.localeCompare(b.name));
   openModal(`
     <div class="modal-title">ADD ITEM</div>
     <div class="form-group" style="margin-bottom:12px;">
@@ -1614,7 +1631,14 @@ async function saveItem() {
 function renderTrips() {
   const year = currentYear;
   const d = getData();
-  const trips = d.trips.filter(t => t.year === year);
+  // Sort by trip date ascending; no date goes to bottom
+  const trips = d.trips.filter(t => t.year === year)
+    .sort((a,b) => {
+      if(!a.tripDate && !b.tripDate) return 0;
+      if(!a.tripDate) return 1;
+      if(!b.tripDate) return -1;
+      return new Date(a.tripDate) - new Date(b.tripDate);
+    });
   const tripCalcs = trips.map(t => ({ ...t, calc: calcTripCost(t.miles, t.vehicle, t.fuelPrice, t.lodging, t.manualFuel) }));
   const totalFuel = tripCalcs.reduce((s,t)=>s+t.calc.finalFuel, 0);
   const totalLodging = tripCalcs.reduce((s,t)=>s+t.lodging, 0);
@@ -1636,6 +1660,7 @@ function renderTrips() {
   document.getElementById("trips-table").innerHTML = tripCalcs.length ? tripCalcs.map(t => `
     <tr>
       <td style="font-weight:500;">${t.name}</td>
+      <td class="mono" style="font-size:13px;">${t.tripDate ? fmtDateFull(t.tripDate) : '<span style="color:var(--muted)">—</span>'}</td>
       <td>${t.vehicle}</td>
       <td class="mono">${t.miles}</td>
       <td class="mono">${t.calc.mpg}</td>
@@ -1649,7 +1674,7 @@ function renderTrips() {
         <button class="btn btn-danger btn-sm" onclick="deleteTrip('${t.id}')">✕</button>
       </td>
     </tr>
-  `).join("") : `<tr><td colspan="10"><div class="empty">No trips for ${year} — add one above</div></td></tr>`;
+  `).join("") : `<tr><td colspan="11"><div class="empty">No trips for ${year} — add one above</div></td></tr>`;
 }
 
 function openTripModal(tripId) {
@@ -1660,6 +1685,20 @@ function openTripModal(tripId) {
     <div class="form-group" style="margin-bottom:12px;">
       <label>Trip Name</label>
       <input type="text" id="m-trip-name" placeholder="e.g. Yellowstone Hunting" value="${trip?.name||''}">
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Trip Date <span style="color:var(--muted);font-size:11px;">optional</span></label>
+        <input type="date" id="m-trip-date" value="${trip?.tripDate||''}">
+      </div>
+      <div class="form-group">
+        <label>Status</label>
+        <select id="m-trip-status">
+          <option value="planned" ${trip?.status==="planned"?"selected":""}>Planned</option>
+          <option value="booked" ${trip?.status==="booked"?"selected":""}>Booked</option>
+          <option value="completed" ${trip?.status==="completed"?"selected":""}>Completed</option>
+        </select>
+      </div>
     </div>
     <div class="form-row">
       <div class="form-group">
@@ -1686,19 +1725,9 @@ function openTripModal(tripId) {
     <div id="m-fuel-preview" style="background:var(--surface2);border-radius:6px;padding:10px;margin-bottom:12px;font-size:13px;color:var(--muted);">
       Enter miles and fuel price to preview calculation
     </div>
-    <div class="form-row">
-      <div class="form-group">
-        <label>Lodging Cost ($)</label>
-        <input type="number" id="m-trip-lodging" placeholder="0.00" min="0" step="0.01" value="${trip?.lodging||0}">
-      </div>
-      <div class="form-group">
-        <label>Status</label>
-        <select id="m-trip-status">
-          <option value="planned" ${trip?.status==="planned"?"selected":""}>Planned</option>
-          <option value="booked" ${trip?.status==="booked"?"selected":""}>Booked</option>
-          <option value="completed" ${trip?.status==="completed"?"selected":""}>Completed</option>
-        </select>
-      </div>
+    <div class="form-group" style="margin-bottom:16px;">
+      <label>Lodging Cost ($)</label>
+      <input type="number" id="m-trip-lodging" placeholder="0.00" min="0" step="0.01" value="${trip?.lodging||0}">
     </div>
     <div class="btn-row">
       <button class="btn btn-primary" onclick="saveTrip('${tripId||''}')">💾 ${trip?"Save Changes":"Add Trip"}</button>
@@ -1742,6 +1771,7 @@ function editTrip(tripId) { openTripModal(tripId); }
 
 async function saveTrip(tripId) {
   const name = document.getElementById("m-trip-name").value.trim();
+  const tripDate = document.getElementById("m-trip-date").value || null;
   const vehicle = document.getElementById("m-trip-vehicle").value;
   const miles = parseFloat(document.getElementById("m-trip-miles").value)||0;
   const fuelPrice = parseFloat(document.getElementById("m-trip-fuel-price").value)||0;
@@ -1752,9 +1782,9 @@ async function saveTrip(tripId) {
   const d = getData();
   if(tripId) {
     const trip = d.trips.find(t=>t.id===tripId);
-    if(trip) Object.assign(trip, {name, vehicle, miles, fuelPrice, manualFuel:manualFuel||null, lodging, status});
+    if(trip) Object.assign(trip, {name, tripDate, vehicle, miles, fuelPrice, manualFuel:manualFuel||null, lodging, status});
   } else {
-    d.trips.push({ id:"TR-"+Date.now(), name, vehicle, miles, fuelPrice, manualFuel:manualFuel||null, lodging, status, year:currentYear });
+    d.trips.push({ id:"TR-"+Date.now(), name, tripDate, vehicle, miles, fuelPrice, manualFuel:manualFuel||null, lodging, status, year:currentYear });
   }
   await persistData();
   closeModalDirect();
