@@ -1494,6 +1494,28 @@ async function updateItemStatus(itemId, status) {
   if(item) { item.status = status; await persistData(); renderCategories(); }
 }
 
+async function saveItemField(el) {
+  const itemId = el.dataset.itemId;
+  const field = el.dataset.field;
+  const d = getData();
+  const item = d.items.find(i=>i.id===itemId);
+  if(!item) return;
+  if(field === 'description') {
+    const val = el.textContent.trim();
+    if(!val) { el.textContent = item.description; return; }
+    item.description = val;
+  } else if(field === 'cost') {
+    const raw = el.textContent.replace(/[$,]/g,'').trim();
+    const val = parseFloat(raw);
+    if(isNaN(val) || val < 0) { el.textContent = fmt$(item.cost); return; }
+    item.cost = val;
+    el.textContent = fmt$(val);
+  }
+  await persistData();
+  toast("Item updated ✓");
+  renderCategories();
+}
+
 async function deleteItem(itemId) {
   const d = getData();
   d.items = d.items.filter(i=>i.id!==itemId);
