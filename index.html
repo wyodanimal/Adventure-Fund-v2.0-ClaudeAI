@@ -437,7 +437,7 @@ input:focus, select:focus, textarea:focus {
     <div class="card">
       <div class="card-title">CATEGORY SPEND <span style="font-size:12px;color:var(--muted);font-family:var(--body-font);letter-spacing:0;font-weight:400;">— click to open</span></div>
       <div style="display:flex;gap:16px;font-size:12px;color:var(--muted);margin-bottom:10px;">
-        <span>🟢 Purchased</span><span>🟠 Committed</span>
+        <span>🟢 Purchased</span><span>🟠 Committed</span><span>🔵 Trip Projection</span>
       </div>
       <div id="dash-categories"></div>
     </div>
@@ -1034,25 +1034,30 @@ function renderDashboard() {
   // Category spend — alphabetical, budgeted, with purchased + committed bars, clickable
   const cats = d.categories.filter(c => c.year === year && c.budget > 0)
     .sort((a,b) => a.name.localeCompare(b.name));
+  const _dashTripProj = calcTripCategoryProjections(year);
   document.getElementById("dash-categories").innerHTML = cats.map(c => {
     const items = d.items.filter(i => i.year === year && i.category === c.id);
     const spent = items.filter(i => i.status==="purchased").reduce((s,i)=>s+i.cost,0);
     const committed = items.filter(i => i.status==="commit").reduce((s,i)=>s+i.cost,0);
+    const isFuel = c.id === "FUEL", isLodg = c.id === "LODG";
+    const tripAmt = isFuel ? _dashTripProj.projFuel : isLodg ? _dashTripProj.projLodging : 0;
     const spendPct = c.budget > 0 ? Math.min(100, (spent/c.budget)*100) : 0;
     const commitPct = c.budget > 0 ? Math.min(100-spendPct, (committed/c.budget)*100) : 0;
-    const totalUsed = spent + committed;
+    const tripPct = c.budget > 0 ? Math.min(100-spendPct-commitPct, (tripAmt/c.budget)*100) : 0;
+    const totalUsed = spent + committed + tripAmt;
     const overBudget = totalUsed > c.budget;
     return `<div class="dash-cat-row progress-wrap" onclick="navToCategory('${c.id}')">
       <div class="progress-label">
         <span>${c.name}</span>
         <span>
-          ${spent>0 ? '<span style="color:var(--green)">' + fmt$(spent) + '</span>' : fmt$(spent)}${committed>0 ? ' <span style="color:var(--accent)">&plus;'+fmt$(committed)+'</span>' : ''} / ${fmt$(c.budget)}${(spent+committed)>c.budget?' <span style="color:var(--red)">over</span>':''}
+          ${spent>0 ? '<span style="color:var(--green)">' + fmt$(spent) + '</span>' : fmt$(spent)}${committed>0 ? ' <span style="color:var(--accent)">&plus;'+fmt$(committed)+'</span>' : ''}${tripAmt>0 ? ' <span style="color:var(--accent2)">+'+fmt$(tripAmt)+' trips</span>' : ''} / ${fmt$(c.budget)}${overBudget?' <span style="color:var(--red)">over</span>':''}
         </span>
       </div>
       <div class="progress-bar">
         <div style="height:100%;display:flex;">
-          <div style="width:${spendPct||( spent>0?1:0)}%;background:var(--green);transition:width 0.4s;" title="Purchased: ${fmt$(spent)}"></div>
+          <div style="width:${spendPct||(spent>0?1:0)}%;background:var(--green);transition:width 0.4s;" title="Purchased: ${fmt$(spent)}"></div>
           <div style="width:${commitPct}%;background:var(--accent);transition:width 0.4s;" title="Committed: ${fmt$(committed)}"></div>
+          <div style="width:${tripPct}%;background:var(--accent2);transition:width 0.4s;" title="Trip projection: ${fmt$(tripAmt)}"></div>
         </div>
       </div>
     </div>`;
@@ -1359,7 +1364,7 @@ function renderCategories() {
       </div>` : '';
     const expandedContent = isExpanded ? `
       <div style="display:flex;gap:12px;font-size:13px;color:var(--muted);margin-bottom:10px;">
-        <span>🟢 Purchased</span><span>🟠 Committed</span>${(isFuel||isLodg)?'<span>🔵 From trips</span>':''}
+        <span>🟢 Purchased</span><span>🟠 Committed</span><span>🔵 Trip Projection</span>${(isFuel||isLodg)?'<span>🔵 From trips</span>':''}
       </div>
       ${tripBadge}
       ${catItems.length ? `<div class="table-wrap" style="margin-top:10px;"><table>
