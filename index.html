@@ -1046,7 +1046,7 @@ function renderDashboard() {
       <div class="progress-label">
         <span>${c.name}</span>
         <span>
-          ${fmt$(spent)>0 ? '<span style="color:var(--green)">' + fmt$(spent) + '</span>' : fmt$(spent)}${committed>0 ? ' <span style="color:var(--accent)">&plus;'+fmt$(committed)+'</span>' : ''} / ${fmt$(c.budget)}${(spent+committed)>c.budget?' <span style="color:var(--red)">over</span>':''}
+          ${spent>0 ? '<span style="color:var(--green)">' + fmt$(spent) + '</span>' : fmt$(spent)}${committed>0 ? ' <span style="color:var(--accent)">&plus;'+fmt$(committed)+'</span>' : ''} / ${fmt$(c.budget)}${(spent+committed)>c.budget?' <span style="color:var(--red)">over</span>':''}
         </span>
       </div>
       <div class="progress-bar">
