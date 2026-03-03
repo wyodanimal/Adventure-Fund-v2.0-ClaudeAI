@@ -436,9 +436,10 @@ input:focus, select:focus, textarea:focus {
   <div class="grid-2">
     <div class="card">
       <div class="card-title">CATEGORY SPEND <span style="font-size:12px;color:var(--muted);font-family:var(--body-font);letter-spacing:0;font-weight:400;">— click to open</span></div>
-      <div style="display:flex;gap:16px;font-size:12px;color:var(--muted);margin-bottom:10px;">
+      <div style="display:flex;gap:16px;font-size:12px;color:var(--muted);margin-bottom:8px;">
         <span>🟢 Purchased</span><span>🟠 Committed</span><span>🔵 Trip Projection</span>
       </div>
+      <div id="dash-cat-totals"></div>
       <div id="dash-categories"></div>
     </div>
     <div class="card">
@@ -917,14 +918,11 @@ function renderPage(page) {
 
 /* Navigate to categories tab and expand a specific category */
 function navToCategory(catId) {
-  // Switch nav tab
   document.querySelectorAll(".nav-tab").forEach(t => t.classList.remove("active"));
   document.querySelector('.nav-tab[data-page="categories"]').classList.add("active");
   currentPage = "categories";
-  // Expand the target category
   _catExpanded[catId] = true;
   renderPage("categories");
-  // Scroll to it after render
   setTimeout(() => {
     const el = document.getElementById("cat-card-" + catId);
     if(el) el.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -1031,10 +1029,47 @@ function renderDashboard() {
       <div class="mono" style="color:var(--green);">${fmt$(i.amount)}</div>
     </div>`).join("") : '<div style="color:var(--muted);font-size:13px;padding:8px 0;">No pending one-time income</div>';
 
-  // Category spend — alphabetical, budgeted, with purchased + committed bars, clickable
+  // --- Category spend with totals summary ---
   const cats = d.categories.filter(c => c.year === year && c.budget > 0)
     .sort((a,b) => a.name.localeCompare(b.name));
   const _dashTripProj = calcTripCategoryProjections(year);
+
+  // Compute cross-category totals for the summary row
+  let totalBudget = 0, totalPurchased = 0, totalCommitted = 0, totalTripProj = 0;
+  for(const c of cats) {
+    const citems = d.items.filter(i => i.year === year && i.category === c.id);
+    totalPurchased += citems.filter(i => i.status==="purchased").reduce((s,i)=>s+i.cost,0);
+    totalCommitted += citems.filter(i => i.status==="commit").reduce((s,i)=>s+i.cost,0);
+    totalBudget += c.budget;
+    if(c.id === "FUEL") totalTripProj += _dashTripProj.projFuel;
+    else if(c.id === "LODG") totalTripProj += _dashTripProj.projLodging;
+  }
+  const _totalUsed = totalPurchased + totalCommitted + totalTripProj;
+  const _remaining = totalBudget - _totalUsed;
+  const _remainingColor = _remaining < 0 ? "var(--red)" : _remaining === totalBudget ? "var(--muted)" : "var(--green)";
+
+  document.getElementById("dash-cat-totals").innerHTML = `
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:12px;padding:10px 12px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;">
+      <div style="text-align:center;">
+        <div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:3px;">Purchased</div>
+        <div class="mono" style="color:var(--green);font-size:14px;">${fmt$(totalPurchased)}</div>
+      </div>
+      <div style="text-align:center;">
+        <div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:3px;">Committed</div>
+        <div class="mono" style="color:var(--accent);font-size:14px;">${fmt$(totalCommitted)}</div>
+      </div>
+      <div style="text-align:center;">
+        <div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:3px;">Trip Proj.</div>
+        <div class="mono" style="color:var(--accent2);font-size:14px;">${fmt$(totalTripProj)}</div>
+      </div>
+      <div style="text-align:center;border-left:1px solid var(--border);padding-left:6px;">
+        <div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:3px;">Remaining</div>
+        <div class="mono" style="color:${_remainingColor};font-size:14px;">${fmt$(_remaining)}</div>
+      </div>
+    </div>
+  `;
+
+  // Category spend rows — alphabetical, budgeted, with purchased + committed + trip bars, clickable
   document.getElementById("dash-categories").innerHTML = cats.map(c => {
     const items = d.items.filter(i => i.year === year && i.category === c.id);
     const spent = items.filter(i => i.status==="purchased").reduce((s,i)=>s+i.cost,0);
