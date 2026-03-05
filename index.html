@@ -1405,7 +1405,7 @@ function renderCategories() {
       ${catItems.length ? `<div class="table-wrap" style="margin-top:10px;"><table>
         <thead><tr><th>Item</th><th>Cost</th><th>Status</th><th></th></tr></thead>
         <tbody>${catItems.map(item => `
-          <tr>
+          <tr style="${item.status==='purchased'?'color:var(--green);':item.status==='commit'?'color:var(--accent);':''}">
             <td>
               <span contenteditable="true" data-item-id="${item.id}" data-field="description"
                 onblur="saveItemField(this)" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}"
