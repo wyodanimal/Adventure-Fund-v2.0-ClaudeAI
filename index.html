@@ -1250,10 +1250,71 @@ function renderIncome() {
   document.getElementById("income-table-wrap").innerHTML = html || `<div class="empty">No income for ${year}</div>`;
 }
 
+function openDepositAccountModal(amount, onConfirm, onCancel) {
+  const d = getData();
+  const accountOptions = d.accounts.map(a =>
+    `<option value="${a.id}">${a.name} (${fmt$(a.balance)})</option>`).join("");
+  openModal(`
+    <div class="modal-title">ADD TO ACCOUNT</div>
+    <p style="color:var(--muted);font-size:13px;margin-bottom:16px;">
+      <strong style="color:var(--green);">${fmt$(amount)}</strong> received — which account should this be deposited into?
+    </p>
+    <div class="form-group" style="margin-bottom:16px;">
+      <label>Account</label>
+      <select id="m-deposit-account">${accountOptions}</select>
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-green" id="m-deposit-confirm">\u2713 Confirm Deposit</button>
+      <button class="btn btn-secondary" id="m-deposit-skip">Skip</button>
+    </div>
+  `);
+  document.getElementById('m-deposit-confirm').onclick = () => {
+    const accountId = document.getElementById('m-deposit-account').value;
+    onConfirm(accountId);
+  };
+  document.getElementById('m-deposit-skip').onclick = onCancel;
+}
+
 async function toggleIncomeReceived(id, val) {
   const d = getData();
   const inc = d.income.find(i=>i.id===id);
-  if(inc) { inc.received = val; await persistData(); renderIncome(); }
+  if(!inc) return;
+
+  if(val) {
+    openDepositAccountModal(inc.amount,
+      async (accountId) => {
+        const acct = d.accounts.find(a=>a.id===accountId);
+        if(acct) acct.balance = +(acct.balance + inc.amount).toFixed(2);
+        inc.received = true;
+        inc.depositedTo = accountId;
+        await persistData();
+        closeModalDirect();
+        toast(fmt$(inc.amount) + ' added to ' + (acct ? acct.name : 'account'));
+        renderIncome();
+        renderDashboard();
+      },
+      async () => {
+        inc.received = true;
+        inc.depositedTo = null;
+        await persistData();
+        closeModalDirect();
+        renderIncome();
+      }
+    );
+  } else {
+    if(inc.depositedTo) {
+      const acct = d.accounts.find(a=>a.id===inc.depositedTo);
+      if(acct) {
+        acct.balance = +(acct.balance - inc.amount).toFixed(2);
+        toast(fmt$(inc.amount) + ' removed from ' + acct.name);
+      }
+      inc.depositedTo = null;
+    }
+    inc.received = false;
+    await persistData();
+    renderIncome();
+    renderDashboard();
+  }
 }
 
 async function markDepositReceived(incId, dateKey, val) {
@@ -1261,11 +1322,45 @@ async function markDepositReceived(incId, dateKey, val) {
   const inc = d.income.find(i=>i.id===incId);
   if(!inc) return;
   if(!inc.depositReceipts) inc.depositReceipts = {};
-  if(val) inc.depositReceipts[dateKey] = true;
-  else delete inc.depositReceipts[dateKey];
-  await persistData();
-  renderIncome();
-  if(val) toast("Deposit marked received ✓");
+  if(!inc.depositAccounts) inc.depositAccounts = {};
+
+  if(val) {
+    openDepositAccountModal(inc.amount,
+      async (accountId) => {
+        const acct = d.accounts.find(a=>a.id===accountId);
+        if(acct) acct.balance = +(acct.balance + inc.amount).toFixed(2);
+        inc.depositReceipts[dateKey] = true;
+        inc.depositAccounts[dateKey] = accountId;
+        await persistData();
+        closeModalDirect();
+        toast(fmt$(inc.amount) + ' added to ' + (acct ? acct.name : 'account'));
+        renderIncome();
+        renderDashboard();
+      },
+      async () => {
+        inc.depositReceipts[dateKey] = true;
+        if(!inc.depositAccounts) inc.depositAccounts = {};
+        inc.depositAccounts[dateKey] = null;
+        await persistData();
+        closeModalDirect();
+        renderIncome();
+      }
+    );
+  } else {
+    const accountId = inc.depositAccounts ? inc.depositAccounts[dateKey] : null;
+    if(accountId) {
+      const acct = d.accounts.find(a=>a.id===accountId);
+      if(acct) {
+        acct.balance = +(acct.balance - inc.amount).toFixed(2);
+        toast(fmt$(inc.amount) + ' removed from ' + acct.name);
+      }
+      delete inc.depositAccounts[dateKey];
+    }
+    delete inc.depositReceipts[dateKey];
+    await persistData();
+    renderIncome();
+    renderDashboard();
+  }
 }
 
 async function deleteIncome(id) {
