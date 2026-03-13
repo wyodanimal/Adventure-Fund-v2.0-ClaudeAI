@@ -770,11 +770,20 @@ function calcDashboard(year) {
   const allTrips = d.trips.filter(t => t.year === year);
   const tripTotal = allTrips.reduce((s,t) => s + calcTripCost(t.miles, t.vehicle, t.fuelPrice, t.lodging, t.manualFuel).total, 0);
   const plannedSpend = catBudgetTotal;
-  // Gap = what you have now + what's still coming in - total budgeted spend
-  // Purchases already reduced totalFund (via account deduction) so don't touch them here.
-  const projectedEnd = totalFund + incomeData.pending - plannedSpend;
+
+  // PLANNING LAYER (gap calc):
+  // Projected Gap = Total Fund + Pending Income - Category Budgets - Reserve Floor
+  // Purchases move money OUT of accounts (reducing totalFund) but that spend is
+  // already reserved inside category budgets. Adding purchasedTotal back to totalFund
+  // before the planning calc prevents double-counting.
+  // Result: marking an item purchased only affects cash/account balances, not the gap.
+  const purchasedTotal = d.items
+    .filter(i => i.year === year && i.status === "purchased" && i.deductedFrom)
+    .reduce((s,i) => s + i.cost, 0);
+  const planningFund = totalFund + purchasedTotal;
+  const projectedEnd = planningFund + incomeData.pending - plannedSpend;
   const gap = projectedEnd - (ys.minBalance || 0);
-  return { totalFund, plannedSpend, tripTotal, tripProj, projectedEnd, goal: ys.minBalance, gap, incomeData, ys };
+  return { totalFund, planningFund, plannedSpend, tripTotal, tripProj, projectedEnd, goal: ys.minBalance, gap, incomeData, ys };
 }
 
 function toast(msg, isError=false) {
