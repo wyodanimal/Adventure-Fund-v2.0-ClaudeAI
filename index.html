@@ -771,14 +771,13 @@ function calcDashboard(year) {
   const tripTotal = allTrips.reduce((s,t) => s + calcTripCost(t.miles, t.vehicle, t.fuelPrice, t.lodging, t.manualFuel).total, 0);
   const plannedSpend = catBudgetTotal;
 
-  // PLANNING LAYER (gap calc):
-  // Projected Gap = Total Fund + Pending Income - Category Budgets - Reserve Floor
-  // Purchases move money OUT of accounts (reducing totalFund) but that spend is
-  // already reserved inside category budgets. Adding purchasedTotal back to totalFund
-  // before the planning calc prevents double-counting.
-  // Result: marking an item purchased only affects cash/account balances, not the gap.
+  // PLANNING LAYER — two systems kept separate:
+  // Gap = Total Fund + ALL purchased items this year (add back money that left accounts
+  // for purchases, since those purchases are already covered by category budgets)
+  // + Pending Income - Category Budgets - Reserve Floor
+  // This means purchasing an item ONLY affects account balances, never the gap.
   const purchasedTotal = d.items
-    .filter(i => i.year === year && i.status === "purchased" && i.deductedFrom)
+    .filter(i => i.year === year && i.status === "purchased")
     .reduce((s,i) => s + i.cost, 0);
   const planningFund = totalFund + purchasedTotal;
   const projectedEnd = planningFund + incomeData.pending - plannedSpend;
