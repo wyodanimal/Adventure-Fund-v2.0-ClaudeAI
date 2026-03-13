@@ -770,6 +770,8 @@ function calcDashboard(year) {
   const allTrips = d.trips.filter(t => t.year === year);
   const tripTotal = allTrips.reduce((s,t) => s + calcTripCost(t.miles, t.vehicle, t.fuelPrice, t.lodging, t.manualFuel).total, 0);
   const plannedSpend = catBudgetTotal;
+  // Gap = what you have now + what's still coming in - total budgeted spend
+  // Purchases already reduced totalFund (via account deduction) so don't touch them here.
   const projectedEnd = totalFund + incomeData.pending - plannedSpend;
   const gap = projectedEnd - (ys.minBalance || 0);
   return { totalFund, plannedSpend, tripTotal, tripProj, projectedEnd, goal: ys.minBalance, gap, incomeData, ys };
