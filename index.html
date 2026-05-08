@@ -1074,7 +1074,7 @@ function renderDashboard() {
       </div>
       <div style="text-align:center;border-left:1px solid var(--border);padding-left:6px;">
         <div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:3px;">Budget Available</div>
-        <div class="mono" style="color:${_remaining < 0 ? 'var(--red)' : 'var(--yellow)'};font-size:14px;">${fmt$(_remaining)}</div>
+        <div class="mono" style="color:${_remaining < 0 ? 'var(--red)' : 'rgba(255,255,255,0.85)'};font-size:14px;">${fmt$(_remaining)}</div>
       </div>
     </div>
   `;
@@ -1551,7 +1551,7 @@ function renderCategories() {
           <div style="font-size:13px;color:var(--muted);margin-top:2px;">
             Budget: ${fmt$(cat.budget)} &nbsp;&middot;&nbsp; Purchased: <span style="color:${purchased>0?'var(--green)':'var(--text)'}">${fmt$(purchased)}</span> &nbsp;&middot;&nbsp; Committed: <span style="color:${committed>0?'var(--accent)':'var(--text)'}">${fmt$(committed)}</span>
             ${tripProjected > 0 ? `&nbsp;·&nbsp; Trips: ${fmt$(tripProjected)}` : ''}
-            &nbsp;&middot;&nbsp; Budget Available: <span style="color:${remaining<0?'var(--red)':remaining===cat.budget?'var(--muted)':'var(--yellow)'}">${fmt$(remaining)}</span>
+            &nbsp;&middot;&nbsp; Budget Available: <span style="color:${remaining<0?'var(--red)':remaining===cat.budget?'var(--muted)':'rgba(255,255,255,0.85)'}">${fmt$(remaining)}</span>
           </div>
         </div>
         <div style="display:flex;gap:6px;" onclick="event.stopPropagation()">
