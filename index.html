@@ -169,7 +169,7 @@ main { padding: 24px 20px; max-width: 1200px; margin: 0 auto; }
 }
 .progress-bar {
   height: 6px;
-  background: var(--border);
+  background: transparent;
   border-radius: 3px;
   overflow: hidden;
 }
@@ -1103,7 +1103,7 @@ function renderDashboard() {
           <div style="width:${spendPct||(spent>0?1:0)}%;background:var(--green);transition:width 0.4s;" title="Purchased: ${fmt$(spent)}"></div>
           <div style="width:${commitPct}%;background:var(--accent);transition:width 0.4s;" title="Committed: ${fmt$(committed)}"></div>
           <div style="width:${tripPct}%;background:var(--accent2);transition:width 0.4s;" title="Trip projection: ${fmt$(tripAmt)}"></div>
-          <div style="width:${Math.max(0,Math.min(100-spendPct-commitPct-tripPct, ((c.budget-totalUsed)/c.budget)*100))}%;background:rgba(255,255,255,0.5);transition:width 0.4s;" title="Budget Available"></div>
+          <div style="width:${Math.max(0,Math.min(100-spendPct-commitPct-tripPct, ((c.budget-totalUsed)/c.budget)*100))}%;background:rgba(255,255,255,0.9);transition:width 0.4s;" title="Budget Available"></div>
         </div>
       </div>
     </div>`;
@@ -1565,7 +1565,7 @@ function renderCategories() {
           <div style="width:${spendPct}%;background:var(--green);transition:width 0.4s;" title="Purchased"></div>
           <div style="width:${commitPct}%;background:var(--accent);transition:width 0.4s;" title="Committed"></div>
           <div style="width:${tripPct}%;background:var(--accent2);transition:width 0.4s;" title="From trips"></div>
-          <div style="width:${Math.max(0,Math.min(100-spendPct-commitPct-tripPct, (remaining/cat.budget)*100))}%;background:rgba(255,255,255,0.5);transition:width 0.4s;" title="Budget Available"></div>
+          <div style="width:${Math.max(0,Math.min(100-spendPct-commitPct-tripPct, (remaining/cat.budget)*100))}%;background:rgba(255,255,255,0.9);transition:width 0.4s;" title="Budget Available"></div>
         </div>
       </div>
       ${expandedContent}
