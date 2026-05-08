@@ -672,9 +672,9 @@ function getDefaultData() {
       { name:"Other",        mpg:15.0 }
     ],
     yearSettings: [
-      { year:2026, minBalance:9500,  autoIncrement:3000 },
-      { year:2027, minBalance:12500, autoIncrement:3000 },
-      { year:2028, minBalance:15500, autoIncrement:3000 }
+      { year:2026, minBalance:9500,  autoIncrement:3000, masterFuelPrice:3.50 },
+      { year:2027, minBalance:12500, autoIncrement:3000, masterFuelPrice:3.50 },
+      { year:2028, minBalance:15500, autoIncrement:3000, masterFuelPrice:3.50 }
     ]
   };
 }
@@ -1074,7 +1074,7 @@ function renderDashboard() {
       </div>
       <div style="text-align:center;border-left:1px solid var(--border);padding-left:6px;">
         <div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:3px;">Budget Available</div>
-        <div class="mono" style="color:${_remainingColor};font-size:14px;">${fmt$(_remaining)}</div>
+        <div class="mono" style="color:${_remaining < 0 ? 'var(--red)' : 'var(--yellow)'};font-size:14px;">${fmt$(_remaining)}</div>
       </div>
     </div>
   `;
@@ -1550,7 +1550,7 @@ function renderCategories() {
           <div style="font-size:13px;color:var(--muted);margin-top:2px;">
             Budget: ${fmt$(cat.budget)} &nbsp;&middot;&nbsp; Purchased: <span style="color:${purchased>0?'var(--green)':'var(--text)'}">${fmt$(purchased)}</span> &nbsp;&middot;&nbsp; Committed: <span style="color:${committed>0?'var(--accent)':'var(--text)'}">${fmt$(committed)}</span>
             ${tripProjected > 0 ? `&nbsp;·&nbsp; Trips: ${fmt$(tripProjected)}` : ''}
-            &nbsp;&middot;&nbsp; Budget Available: <span style="color:${remaining<0?'var(--red)':remaining===cat.budget?'var(--muted)':'var(--green)'}">${fmt$(remaining)}</span>
+            &nbsp;&middot;&nbsp; Budget Available: <span style="color:${remaining<0?'var(--red)':remaining===cat.budget?'var(--muted)':'var(--yellow)'}">${fmt$(remaining)}</span>
           </div>
         </div>
         <div style="display:flex;gap:6px;" onclick="event.stopPropagation()">
@@ -1883,7 +1883,7 @@ function openTripModal(tripId) {
     <div class="form-row">
       <div class="form-group">
         <label>Fuel Price ($/gal)</label>
-        <input type="number" id="m-trip-fuel-price" placeholder="3.50" min="0" step="0.01" value="${trip?.fuelPrice||3.50}" oninput="previewFuelCalc()">
+        <input type="number" id="m-trip-fuel-price" placeholder="3.50" min="0" step="0.01" value="${trip?.fuelPrice || (getData().yearSettings.find(y=>y.year===currentYear)?.masterFuelPrice || 3.50)}" oninput="previewFuelCalc()">
       </div>
       <div class="form-group">
         <label>Manual Fuel Override ($) <span style="color:var(--muted);font-size:11px;">optional</span></label>
@@ -1974,6 +1974,13 @@ function renderSettings() {
       <div class="form-group"><label>Year Goal / Min Balance ($)</label><input type="number" id="s-min-bal" value="${ys.minBalance||0}" min="0" step="500"></div>
       <div class="form-group"><label>Auto-Increment Target ($)</label><input type="number" id="s-auto-inc" value="${ys.autoIncrement||0}" min="0" step="500"></div>
     </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Master Fuel Price ($/gal)</label>
+        <input type="number" id="s-fuel-price" value="${ys.masterFuelPrice||3.50}" min="0" step="0.01" placeholder="3.50">
+        <span style="font-size:12px;color:var(--muted);margin-top:4px;">Auto-applied to all future trips. Past trips keep their recorded price.</span>
+      </div>
+    </div>
     <p style="font-size:12px;color:var(--muted);">These are the targets for ${year}.</p>
   `;
   document.getElementById("vehicle-list").innerHTML = d.vehicles.map((v,i) => `
@@ -1992,8 +1999,17 @@ async function saveYearSettings() {
   if(!ys) { ys = {year:currentYear}; d.yearSettings.push(ys); }
   ys.minBalance = minBalance;
   ys.autoIncrement = autoIncrement;
+  ys.masterFuelPrice = parseFloat(document.getElementById("s-fuel-price").value)||3.50;
   await persistData();
-  toast("Settings saved!");
+  // Update all future (planned) trips to use the new master fuel price
+  const d2 = getData();
+  const today2 = new Date(); today2.setHours(0,0,0,0);
+  d2.trips.filter(t => t.year === currentYear && t.status !== "completed").forEach(t => {
+    const tripDate = t.tripDate ? new Date(t.tripDate+"T12:00:00") : null;
+    if(!tripDate || tripDate >= today2) t.fuelPrice = ys.masterFuelPrice;
+  });
+  await persistData();
+  toast("Settings saved! Fuel price updated on future trips.");
 }
 
 async function addVehicle() {
