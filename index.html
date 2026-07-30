@@ -1890,10 +1890,10 @@ async function deleteItem(itemId) {
 }
 
 async function deleteCategory(catId) {
-  if(!confirm("Delete this category and all its items?")) return;
+  if(!confirm("Delete this category and all its items for "+currentYear+"?")) return;
   const d = getData();
-  d.categories = d.categories.filter(c=>c.id!==catId);
-  d.items = d.items.filter(i=>i.category!==catId);
+  d.categories = d.categories.filter(c=>!(c.id===catId && c.year===currentYear));
+  d.items = d.items.filter(i=>!(i.category===catId && i.year===currentYear));
   await persistData();
   toast("Category deleted");
   renderCategories();
@@ -1901,7 +1901,7 @@ async function deleteCategory(catId) {
 
 function editCategoryBudget(catId) {
   const d = getData();
-  const cat = d.categories.find(c=>c.id===catId);
+  const cat = d.categories.find(c=>c.id===catId && c.year===currentYear);
   if(!cat) return;
   openModal(`
     <div class="modal-title">EDIT BUDGET</div>
@@ -1919,7 +1919,7 @@ function editCategoryBudget(catId) {
 async function saveCategoryBudget(catId) {
   const val = parseFloat(document.getElementById("m-cat-budget").value)||0;
   const d = getData();
-  const cat = d.categories.find(c=>c.id===catId);
+  const cat = d.categories.find(c=>c.id===catId && c.year===currentYear);
   if(cat) { cat.budget = val; await persistData(); }
   closeModalDirect();
   toast("Budget updated!");
